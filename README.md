@@ -5,6 +5,8 @@
 alias kt=kiosk
 
 sudo chmod 666 /var/run/docker.sock
+export KUBECONFIG="C:\Users\sg\.kube\config"
+
 
 kind delete cluster
 
