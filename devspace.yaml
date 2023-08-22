@@ -1,0 +1,81 @@
+version: v1beta10
+images:
+  controller:
+    image: kiosksh/kiosktest
+    build:
+      docker:
+        skipPush: true
+        options:
+          target: builder
+deployments:
+  - name: kiosk
+    helm:
+      chart:
+        name: ./chart
+      values:
+        image: kiosksh/kiosktest
+        kiosk:
+          command: ["/workspace/kiosk"]
+commands:
+  - name: dev
+    command: "devspace dev -n kiosk -d --profile dev"
+  - name: deploy
+    command: "devspace deploy --profile deploy -n kiosk -d"
+  - name: clean
+    command: "(kubectl delete validatingwebhookconfiguration kiosk || true) && (kubectl delete apiservice v1alpha1.tenancy.kiosk.sh || true)"
+profiles:
+  - name: dev
+    patches:
+      - op: replace
+        path: deployments[0].helm.values.kiosk.command
+        value: ["sleep"]
+      - op: add
+        path: deployments[0].helm.values.kiosk.args
+        value: ["99999999999"]
+      - op: add
+        path: deployments[0].helm.values.readinessProbe
+        value:
+          enabled: false
+      - op: add
+        path: deployments[0].helm.values.livenessProbe
+        value:
+          enabled: false
+      - op: add
+        path: deployments[0].helm.values.kiosk.resources
+        value:
+          requests:
+            memory: "0"
+            cpu: "0"
+          limits:
+            memory: "0"
+            cpu: "0"
+    replace:
+      dev:
+        terminal:
+          imageName: controller
+        sync:
+          - imageName: controller
+            excludePaths:
+              - hack/
+              - /gen
+              - /docs
+              - /config
+              - bin/
+              - .vscode/
+              - .git/
+              - examples/
+              - chart/
+              - /helm
+  - name: deploy
+    replace:
+      images:
+        controller:
+          image: kiosksh/kiosktest
+      deployments:
+        - name: kiosk
+          helm:
+            chart:
+              name: ./chart
+            values:
+              image: kiosksh/kiosktest
+              replicaCount: 3

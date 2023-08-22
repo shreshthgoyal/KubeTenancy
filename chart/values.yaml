@@ -1,0 +1,78 @@
+# Default values for kiosk.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+env: {}
+
+nodeSelector: {}
+
+readinessProbe:
+  enabled: true
+
+livenessProbe:
+  enabled: true
+
+kiosk:
+  command: 
+  - /kiosk
+  args: []
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: "1"
+    requests:
+      memory: 128Mi
+      cpu: 50m
+
+webhook:
+  create: true
+
+apiservice:
+  create: true
+  port: 8443
+
+serviceAccount:
+  name: serviceaccount
+  create: true
+  clusterRole: cluster-admin
+
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 9443
+
+metrics:
+  enabled: false
+  ## Create a servicemonitor for the operator
+  ##
+  serviceMonitor:
+    enabled: false
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+    ## Scrape timeout. If not set, the Prometheus default scrape timeout is used.
+    scrapeTimeout: ""
+
+    ## Metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    #   relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace

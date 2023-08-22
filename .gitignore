@@ -1,0 +1,11 @@
+apiserver.local.config/
+bin/
+default.etcd/
+
+/violations.report
+/kubeconfig
+
+.devspace/
+/main
+/profile.out
+/test

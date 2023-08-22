@@ -1,0 +1,10 @@
+.vscode/
+.devspace/
+bin/
+chart/
+config/
+hack/
+devspace.yaml
+/.git
+/docs
+/test
