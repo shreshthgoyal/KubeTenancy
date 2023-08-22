@@ -41,6 +41,8 @@ kubectl apply -f https://raw.githubusercontent.com/shreshthgoyal/KubeTenancy/mai
 kubectl apply -f https://raw.githubusercontent.com/shreshthgoyal/KubeTenancy/main/yaml/space-3.yaml --as=john
 kubectl apply -f https://raw.githubusercontent.com/shreshthgoyal/KubeTenancy/main/yaml/accountquota.yaml
 kubectl apply -f https://raw.githubusercontent.com/shreshthgoyal/KubeTenancy/main/yaml/template-manifests.yaml
+
+ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 kubectl apply -n johns-space --as=john -f https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/application/deployment.yaml
 kubectl patch -n kube-system deployment metrics-server --type=json   -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
 kubectl top node
